@@ -9,6 +9,7 @@ const useMercadoPago = () => {
     initMercadoPago(process.env.NEXT_PUBLIC_MERCADO_PAGO_PUBLIC_KEY!);
   }, []);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async function createMercadoPagoCheckout(checkoutData: any) {
     try {
       const response = await fetch("/api/mercado-pago/create-checkout", {
