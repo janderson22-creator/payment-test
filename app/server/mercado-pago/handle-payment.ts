@@ -9,5 +9,7 @@ export async function handleMercadoPagoPayment(paymentData: PaymentResponse) {
 
   // Faz alguma ação aqui - manda email pro usuario, libera acesso, erc.
 
+  console.log(userEmail);
+  console.log(testeId);
   return;
 }
