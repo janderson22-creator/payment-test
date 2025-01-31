@@ -9,8 +9,8 @@ export default function Home() {
       <button
         onClick={() =>
           createMercadoPagoCheckout({
-            testeId: "123",
-            userEmail: "loveyuuqr@gmail.com",
+            teste_id: "123",
+            user_email: "cliente123@gmail.com",
           })
         }
         className="bg-blue-500 text-white px-4 py-2 rounded-md"

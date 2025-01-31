@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
             description: "Descrição do produto",
             title: "Nome do produto",
             quantity: 1,
-            unit_price: 9.99,
+            unit_price: 1.0,
             currency_id: "BRL",
             category_id: "category", // Recomendado inserir, mesmo que não tenha categoria - Aumenta a pontuação da sua integração com o Mercado Pago
           },
