@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "dev:ws": "node app/lib/websocket.mjs"
   },
   "dependencies": {
     "@mercadopago/sdk-react": "^0.0.23",
