@@ -8,6 +8,7 @@ interface CheckoutData {
   transaction_amount: number;
   description: string;
   payment_method_id: string;
+  payment_method: string;
   payer: {
     email: string;
   };
