@@ -1,41 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import useMercadoPago from "./hooks/useMercadoPago";
 
 export default function Home() {
   const { createMercadoPagoCheckout } = useMercadoPago();
 
-  const [paymentStatus, setPaymentStatus] = useState<string | null>(null);
-
   // 🔹 Estados para armazenar os dados do Pix
   const [pixCode, setPixCode] = useState<string | null>(null);
   const [qrCodeBase64, setQrCodeBase64] = useState<string | null>(null);
-
-  useEffect(() => {
-    const socket = new WebSocket("ws://localhost:8080");
-
-    socket.onopen = () => {
-      console.log("✅ Conexão WebSocket estabelecida!");
-    };
-
-    socket.onmessage = (event) => {
-      console.log("📩 Mensagem recebida:", event.data);
-      const data = JSON.parse(event.data);
-
-      if (data.status === "approved") {
-        setPaymentStatus("✅ Pagamento Aprovado!");
-      }
-    };
-
-    socket.onerror = (error) => {
-      console.error("❌ Erro no WebSocket:", error);
-    };
-
-    return () => {
-      socket.close();
-    };
-  }, []);
 
   const pixPayment = () => {
     fetch("/api/mercado-pago/create-checkout", {
@@ -78,12 +51,6 @@ export default function Home() {
           Pagar com Pix
         </button>
       </div>
-
-      {paymentStatus && (
-        <div className="text-green-600 font-semibold text-lg">
-          {paymentStatus}
-        </div>
-      )}
 
       {/* 🔹 Exibição do Código Pix e QR Code */}
       {pixCode && (
