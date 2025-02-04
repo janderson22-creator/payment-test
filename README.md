@@ -1,36 +1,138 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Next.js + Mercado Pago Payment Integration
 
-## Getting Started
+Este projeto é uma aplicação Next.js que integra o Mercado Pago para processar pagamentos via **Checkout Pro** e **Checkout Transparente com Pix**. Ele permite que os usuários realizem pagamentos e visualizem o status do pagamento diretamente na interface.
 
-First, run the development server:
+## 🚀 Funcionalidades
+
+- **Checkout Pro**: Redireciona o usuário para o site do Mercado Pago para completar o pagamento.
+- **Checkout Transparente com Pix**: Gera um código Pix **Copia e Cola** e um **QR Code** para pagamento direto.
+- **Atualização Automática**: Após a conclusão do pagamento, o usuário recebe uma mensagem de confirmação.
+
+## 📌 Tecnologias Utilizadas
+
+- **Next.js** (App Router)
+- **TypeScript**
+- **Mercado Pago SDK**
+- **Ngrok** (para Webhooks em ambiente local)
+
+---
+
+## 🔧 Configuração e Uso
+
+### 1️⃣ **Instalar dependências**
+
+Antes de começar, instale as dependências do projeto:
+
+```bash
+npm install
+# ou
+yarn install
+# ou
+pnpm install
+```
+
+### 2️⃣ **Configurar variáveis de ambiente**
+
+Crie um arquivo `.env.local` na raiz do projeto e adicione as credenciais do Mercado Pago:
+
+```env
+MERCADO_PAGO_ACCESS_TOKEN=SEU_ACCESS_TOKEN
+NEXT_PUBLIC_MERCADO_PAGO_PUBLIC_KEY=SUA_PUBLIC_KEY
+MERCADO_PAGO_WEBHOOK_SECRET=SUA_WEBHOOK_SECRET
+```
+
+> **Observação:** Substitua os valores acima pelas credenciais da sua conta Mercado Pago.
+
+### 3️⃣ **Executar o servidor de desenvolvimento**
+
+Inicie o servidor Next.js:
 
 ```bash
 npm run dev
-# or
+# ou
 yarn dev
-# or
+# ou
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Acesse [http://localhost:3000](http://localhost:3000) no seu navegador.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 4️⃣ **Configurar Webhooks com Ngrok**
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+O Mercado Pago não envia Webhooks para `localhost`, então é necessário utilizar o **Ngrok**:
 
-## Learn More
+1. Instale o Ngrok (caso ainda não tenha):
+   ```bash
+   npm install -g ngrok
+   ```
+2. Inicie o Ngrok apontando para a porta do Next.js:
+   ```bash
+   ngrok http 3000
+   ```
+3. Copie a URL gerada pelo Ngrok (exemplo: `https://random-ngrok-url.ngrok.io`).
+4. Configure essa URL nos Webhooks do Mercado Pago.
 
-To learn more about Next.js, take a look at the following resources:
+### 5️⃣ **Testando os Pagamentos**
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+#### 🔹 **Pagamento via Checkout Pro**
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Clique no botão **"Pagar no Mercado Pago"**.
+2. O usuário será redirecionado para o Mercado Pago para finalizar o pagamento.
+3. Após a conclusão, o status será atualizado automaticamente.
 
-## Deploy on Vercel
+#### 🔹 **Pagamento via Pix (Checkout Transparente)**
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Clique no botão **"Pagar com Pix"**.
+2. O código **Pix Copia e Cola** e o **QR Code** aparecerão na tela.
+3. Pague via aplicativo bancário.
+4. O sistema verificará automaticamente o pagamento e exibirá a mensagem de confirmação.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## 🛠 Estrutura do Projeto
+
+```bash
+📂 app/
+ ├── api/
+ │   ├── mercadopago-webhook/   # Webhook para capturar pagamentos
+ │   ├── mercadopago-checkout/  # Criar checkout Pix e Checkout Pro
+ │   ├── payment-status/        # Endpoint para verificar status do pagamento
+ ├── lib/
+ │   ├── mercado-pago.ts        # Configuração do Mercado Pago SDK
+ ├── server/
+ │   ├── mercado-pago/handle-payment.ts # Lógica de processamento do pagamento
+ ├── hooks/
+ │   ├── useMercadoPago.ts      # Hook para integração com Mercado Pago no frontend
+ ├── page.tsx                   # Tela principal com botões de pagamento
+```
+
+---
+
+## 🚀 **Deploy**
+
+A maneira mais fácil de fazer o deploy deste projeto é utilizando a **Vercel**:
+
+```bash
+vercel deploy
+```
+
+Certifique-se de configurar corretamente as **variáveis de ambiente** na Vercel.
+
+---
+
+## 📖 **Recursos Úteis**
+
+- [Documentação Oficial do Mercado Pago](https://www.mercadopago.com.br/developers/pt/docs)
+- [Webhooks do Mercado Pago](https://www.mercadopago.com.br/developers/pt/docs/pagos/webhooks)
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Ngrok](https://ngrok.com/)
+
+---
+
+## 📝 **Licença**
+
+Este projeto é open-source e está disponível sob a licença MIT.
+
+---
+
+💡 **Dúvidas?** Abra uma issue no repositório! 🚀
