@@ -8,7 +8,6 @@ export async function POST(req: NextRequest) {
 
   try {
     if (payment_method === "pix") {
-      // 🔹 Gera um pagamento via Pix
       const payment = new Payment(mpClient);
       const createdPayment = await payment.create({
         body: {

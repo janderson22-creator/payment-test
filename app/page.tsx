@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useMercadoPago from "./hooks/useMercadoPago";
 
 export default function Home() {
   const { createMercadoPagoCheckout } = useMercadoPago();
-
-  // 🔹 Estados para armazenar os dados do Pix
+  const [paymentId, setPaymentId] = useState<string | null>(null);
+  const [paymentStatus, setPaymentStatus] = useState<string | null>(null);
   const [pixCode, setPixCode] = useState<string | null>(null);
   const [qrCodeBase64, setQrCodeBase64] = useState<string | null>(null);
 
@@ -23,10 +23,31 @@ export default function Home() {
     })
       .then((res) => res.json())
       .then((data) => {
-        setPixCode(data.pix_code); // Código Pix Copia e Cola
-        setQrCodeBase64(data.qr_code_base64); // QR Code Base64
+        setPixCode(data.pix_code);
+        setQrCodeBase64(data.qr_code_base64);
+        setPaymentId(data.payment_id);
       });
   };
+
+  useEffect(() => {
+    if (!paymentId) return;
+
+    const interval = setInterval(() => {
+      fetch(`/api/mercado-pago/payment-status?payment_id=${paymentId}`)
+        .then((res) => res.json())
+        .then((data) => {
+          setPaymentStatus(data.status);
+          if (data.status === "approved") {
+            setPixCode(null);
+            setQrCodeBase64(null);
+            clearInterval(interval);
+          }
+        })
+        .catch((error) => console.error("Erro ao verificar status:", error));
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [paymentId]);
 
   return (
     <div className="flex flex-col justify-center items-center h-screen gap-6">
@@ -52,7 +73,6 @@ export default function Home() {
         </button>
       </div>
 
-      {/* 🔹 Exibição do Código Pix e QR Code */}
       {pixCode && (
         <div className="w-6/12 bg-gray-100 p-6 rounded-lg shadow-md flex flex-col items-center">
           <h3 className="text-lg font-semibold text-gray-700 mb-2">
@@ -77,6 +97,18 @@ export default function Home() {
             alt="QR Code Pix"
             className="w-40 h-40 rounded-md shadow-md"
           />
+        </div>
+      )}
+
+      {paymentStatus === "approved" && (
+        <div className="bg-green-100 text-green-800 px-4 py-2 rounded-lg mt-4">
+          ✅ Pagamento aprovado! Obrigado pela compra.
+        </div>
+      )}
+
+      {paymentStatus === "rejected" && (
+        <div className="bg-red-100 text-red-800 px-4 py-2 rounded-lg mt-4">
+          ❌ Pagamento recusado. Tente novamente.
         </div>
       )}
     </div>
